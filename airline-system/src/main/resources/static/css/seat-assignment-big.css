@@ -1,0 +1,95 @@
+/* Big plane layout specific styles */
+
+.seat-grid[data-plane-size="big"] .grid-container {
+    max-width: 900px;
+}
+
+.seat-grid[data-plane-size="big"] .row-number {
+    left: 200px; /* Adjust as needed for big plane */
+}
+
+.seat-grid[data-plane-size="big"] .row {
+    gap: 15px; /* Default gap for big plane rows */
+}
+
+/* High-level seats (Rows 1-3) - 4 seats per row */
+.seat-grid[data-plane-size="big"] .row[data-row="1"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="2"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="3"] .seat {
+    width: 52px;
+    height: 52px;
+}
+
+/* Spacing for high-level seats */
+.seat-grid[data-plane-size="big"] .row[data-row="1"] .seats .seat:nth-child(2),
+.seat-grid[data-plane-size="big"] .row[data-row="2"] .seats .seat:nth-child(2),
+.seat-grid[data-plane-size="big"] .row[data-row="3"] .seats .seat:nth-child(2) {
+    margin-right: 30px; /* Aisle between B and C */
+}
+
+/* Normal seats (Rows 4-17) - 6 seats per row */
+.seat-grid[data-plane-size="big"] .row[data-row="4"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="5"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="6"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="7"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="8"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="9"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="10"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="11"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="12"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="13"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="14"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="15"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="16"] .seat,
+.seat-grid[data-plane-size="big"] .row[data-row="17"] .seat {
+    width: 36px;
+    height: 36px;
+}
+
+/* Spacing for normal seats (6 per row) */
+.seat-grid[data-plane-size="big"] .row[data-row="4"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="5"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="6"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="7"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="8"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="9"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="10"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="11"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="12"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="13"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="14"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="15"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="16"] .seats .seat:nth-child(3),
+.seat-grid[data-plane-size="big"] .row[data-row="17"] .seats .seat:nth-child(3) {
+    margin-right: 20px; /* Aisle between C and D */
+}
+
+/* Last row of normal seats (Row 18) - 4 seats per row */
+.seat-grid[data-plane-size="big"] .row[data-row="18"] .seat {
+    width: 36px;
+    height: 36px;
+}
+
+/* Spacing for last row of normal seats */
+.seat-grid[data-plane-size="big"] .row[data-row="18"] .seats {
+    display: flex;
+    width: 100%;
+    max-width: 300px; /* Match the width of 6-seat rows */
+    margin: 0 auto;
+}
+
+.seat-grid[data-plane-size="big"] .row[data-row="18"] .seats .seat:first-child {
+    margin-left: 22px;
+}
+
+.seat-grid[data-plane-size="big"] .row[data-row="18"] .seats .seat:nth-child(3) {
+    margin-left: 95.2px;
+}
+
+.seat-grid[data-plane-size="big"] .row[data-row="18"] .seats .seat:nth-child(2) {
+    margin-right: 5px; /* Aisle between B and C */
+}
+
+.plane-icon i {
+    transform: rotate(-90deg); /* Make plane point upward */
+} 

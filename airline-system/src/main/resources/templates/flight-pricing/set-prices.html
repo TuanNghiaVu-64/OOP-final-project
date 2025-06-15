@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Set Prices for Flight</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/forms.css}" rel="stylesheet">
+    <link th:href="@{/css/form-validation.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <div class="dashboard-container">
+        <div class="content-header">
+            <div class="header-left">
+                <a th:href="@{/flight-pricing/list-flights}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2>Set Prices for Flight</h2>
+            </div>
+        </div>
+        
+        <!-- Flight Details Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-plane-departure"></i> Flight Details</h3>
+                <p>
+                    <strong>Aircraft:</strong> <span th:text="${flight.planeModel}"></span> |
+                    <strong>Route:</strong> <span th:text="${flight.originCity + ', ' + flight.originCountry + ' → ' + flight.destinationCity + ', ' + flight.destinationCountry}"></span> |
+                    <strong>Departure:</strong> <span th:text="${#temporals.format(flight.departureTime, 'MMM dd, yyyy HH:mm')}"></span>
+                </p>
+            </div>
+        </div>
+        
+        <div th:if="${success}" class="flash-message flash-success" th:text="${success}"></div>
+        <div th:if="${error}" class="flash-message flash-error" th:text="${error}"></div>
+        
+        <!-- Pricing Form -->
+        <div class="form-container">
+            <form th:action="@{'/flight-pricing/set-prices/' + ${flight.id}}" method="post" id="setPricesForm" onsubmit="return validatePricesForm()">
+                <div th:each="seatType, iterStat : ${seatTypes}" class="form-group">
+                    <input type="hidden" th:name="seatTypeId" th:value="${seatType.id}" />
+                    
+                    <label th:for="'price_' + ${iterStat.index}">
+                        <span th:text="${seatType.name}"></span> *
+                        <small th:text="${seatType.features}"></small>
+                    </label>
+                    <input type="number" 
+                           th:id="'price_' + ${iterStat.index}"
+                           th:name="price" 
+                           step="0.01" 
+                           min="0"
+                           placeholder="0.00"
+                           th:value="${#lists.isEmpty(existingPrices.?[seatTypeId == __${seatType.id}__]) ? '' : existingPrices.?[seatTypeId == __${seatType.id}__][0].price}"
+                           required />
+                    <span class="field-error" th:id="'price-error-' + ${iterStat.index}">Price is required and must be greater than 0</span>
+                </div>
+                
+                <div class="button-group">
+                    <a th:href="@{/flight-pricing/list-flights}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-dollar-sign"></i> Set Prices
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script type="module" th:src="@{/js/pages/flight-pricing.js}"></script>
+</body>
+</html> 

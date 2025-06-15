@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Users - Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/forms.css}" rel="stylesheet">
+    <link th:href="@{/css/user-management.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <div class="dashboard-container">
+        <div class="content-header">
+            <div class="header-left">
+                <a th:href="@{/manager-dashboard}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2>View All Users</h2>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table" th:if="${not #lists.isEmpty(users)}">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Account Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user, iterStat : ${users}">
+                        <td th:text="${iterStat.count}"></td>
+                        <td th:text="${user.username}"></td>
+                        <td>
+                            <span th:class="'role-badge ' + ${user.role.toLowerCase()}" 
+                                  th:text="${user.role}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${user.approved}" class="status-badge approved">
+                                <i class="fas fa-check-circle"></i> Active
+                            </span>
+                            <span th:unless="${user.approved}" class="status-badge pending">
+                                <i class="fas fa-clock"></i> Pending
+                            </span>
+                        </td>
+                        <td>
+                            <span th:if="${user.role == 'CUSTOMER'}" class="account-type customer">
+                                <i class="fas fa-user"></i> Self-Registered
+                            </span>
+                            <span th:unless="${user.role == 'CUSTOMER'}" class="account-type staff">
+                                <i class="fas fa-user-tie"></i> Staff Account
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div th:if="${#lists.isEmpty(users)}" class="no-data">
+                No users found in the system.
+            </div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-header">
+                <i class="fas fa-info-circle"></i>
+                <h3>User Overview</h3>
+            </div>
+            <div class="info-content">
+                <p><strong>Total Users:</strong> <span th:text="${#lists.size(users)}">0</span></p>
+                <p><strong>Active Users:</strong> <span th:text="${#lists.size(users.?[approved == true])}">0</span></p>
+                <p><strong>Pending Approval:</strong> <span th:text="${#lists.size(users.?[approved == false])}">0</span></p>
+                <div class="action-links">
+                    <a th:href="@{/users/pending}" class="btn btn-primary">
+                        <i class="fas fa-tasks"></i> Review Pending Users
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html> 

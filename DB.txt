@@ -1,0 +1,71 @@
+Table users {
+  id serial [pk]
+  username text [not null, unique]
+  password text [not null]
+  role text [not null, note: 'admin, manager, customer']
+  approved boolean [default: false]
+}
+
+Table seat_types {
+  id serial [pk]
+  name text [not null]
+  features text
+  approved boolean [default: false]
+}
+
+Table planes {
+  id serial [pk]
+  model text [not null]
+  size text [not null, note: 'small (5x5), big (10x10)']
+  approved boolean [default: false]
+}
+
+Table seats {
+  id serial [pk]
+  plane_id int [ref: > planes.id]
+  seat_code text [not null]
+  row int [not null]
+  col int [not null]
+  seat_type_id int [ref: > seat_types.id]
+}
+
+Table locations {
+  id serial [pk]
+  city text [not null]
+  country text
+}
+
+Table flights {
+  id serial [pk]
+  plane_id int [ref: > planes.id]
+  origin_id int [ref: > locations.id]
+  destination_id int [ref: > locations.id]
+  departure_time timestamp [not null]
+  approved boolean [default: false]
+  arrival_time timestamp [not null]
+}
+
+Table flight_seat_types {
+  id serial [pk]
+  flight_id int [ref: > flights.id]
+  seat_type_id int [ref: > seat_types.id]
+  price numeric [not null]
+  approved boolean [default: false]
+}
+
+Table flight_seat_assignments {
+  id serial [pk]
+  flight_id int [ref: > flights.id]
+  seat_id int [ref: > seats.id]
+  flight_seat_type_id int [ref: > flight_seat_types.id]
+  available boolean [default: true]
+}
+
+Table bookings {
+  id serial [pk]
+  user_id int [ref: > users.id]
+  flight_seat_assignment_id int [ref: > flight_seat_assignments.id]
+  booking_time timestamp [default: `now()`]
+  status varchar(20)
+  payment_time timestamp [not null]
+}
