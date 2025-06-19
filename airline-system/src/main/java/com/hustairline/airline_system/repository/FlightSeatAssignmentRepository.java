@@ -1,21 +1,24 @@
 package com.hustairline.airline_system.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hustairline.airline_system.config.DatabaseConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.hustairline.airline_system.model.FlightSeatAssignment;
 
 @Repository
-public class FlightSeatAssignmentRepository {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/HUSTAirline";
-    private static final String USER = "postgres";
-    private static final String PASS = "NgH1A@2005";
+public class FlightSeatAssignmentRepository extends AbstractJdbcRepository {
+
+    @Autowired
+    public FlightSeatAssignmentRepository(DatabaseConfig dbConfig) {
+        super(dbConfig);
+    }
 
     public void createFlightSeatAssignments(int flightId) {
         // First, check if assignments already exist for this flight
@@ -34,7 +37,7 @@ public class FlightSeatAssignmentRepository {
             WHERE f.id = ? AND fst.approved = true AND s.seat_type_id IS NOT NULL
             """;
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, flightId);
@@ -48,7 +51,7 @@ public class FlightSeatAssignmentRepository {
     public boolean flightSeatAssignmentsExist(int flightId) {
         String sql = "SELECT COUNT(*) FROM flight_seat_assignments WHERE flight_id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, flightId);
@@ -79,7 +82,7 @@ public class FlightSeatAssignmentRepository {
             """;
         List<FlightSeatAssignment> assignments = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, flightId);
@@ -110,7 +113,7 @@ public class FlightSeatAssignmentRepository {
     public void updateSeatAvailability(int assignmentId, boolean available) {
         String sql = "UPDATE flight_seat_assignments SET available = ? WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setBoolean(1, available);
@@ -130,7 +133,7 @@ public class FlightSeatAssignmentRepository {
             WHERE fsa.flight_id = ? AND s.seat_type_id = ? AND fsa.available = true
             """;
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, flightId);
@@ -151,7 +154,7 @@ public class FlightSeatAssignmentRepository {
     public void deleteFlightSeatAssignments(int flightId) {
         String sql = "DELETE FROM flight_seat_assignments WHERE flight_id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, flightId);
@@ -174,7 +177,7 @@ public class FlightSeatAssignmentRepository {
             WHERE fsa.id = ?
             """;
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, assignmentId);

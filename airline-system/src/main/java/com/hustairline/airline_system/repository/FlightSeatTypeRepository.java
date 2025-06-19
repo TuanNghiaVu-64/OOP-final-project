@@ -2,7 +2,6 @@ package com.hustairline.airline_system.repository;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,19 +9,23 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hustairline.airline_system.config.DatabaseConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.hustairline.airline_system.model.FlightSeatType;
 
 @Repository
-public class FlightSeatTypeRepository {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/HUSTAirline";
-    private static final String USER = "postgres";
-    private static final String PASS = "NgH1A@2005";
+public class FlightSeatTypeRepository extends AbstractJdbcRepository {
+
+    @Autowired
+    public FlightSeatTypeRepository(DatabaseConfig dbConfig) {
+        super(dbConfig);
+    }
 
     public FlightSeatType addFlightSeatType(FlightSeatType flightSeatType) {
         String sql = "INSERT INTO flight_seat_types (flight_id, seat_type_id, price, approved) VALUES (?, ?, ?, ?) RETURNING id";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             stmt.setInt(1, flightSeatType.getFlightId());
@@ -58,7 +61,7 @@ public class FlightSeatTypeRepository {
             """;
         List<FlightSeatType> flightSeatTypes = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, flightId);
@@ -102,7 +105,7 @@ public class FlightSeatTypeRepository {
             """;
         List<FlightSeatType> flightSeatTypes = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -137,7 +140,7 @@ public class FlightSeatTypeRepository {
     public void updateApprovalStatus(int flightSeatTypeId, boolean approved) {
         String sql = "UPDATE flight_seat_types SET approved = ? WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setBoolean(1, approved);
@@ -152,7 +155,7 @@ public class FlightSeatTypeRepository {
     public void deleteFlightSeatType(int flightSeatTypeId) {
         String sql = "DELETE FROM flight_seat_types WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, flightSeatTypeId);
@@ -180,7 +183,7 @@ public class FlightSeatTypeRepository {
             """;
         List<FlightSeatType> flightSeatTypes = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -214,7 +217,7 @@ public class FlightSeatTypeRepository {
     public boolean existsByFlightAndSeatType(int flightId, int seatTypeId) {
         String sql = "SELECT COUNT(*) FROM flight_seat_types WHERE flight_id = ? AND seat_type_id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, flightId);
@@ -236,7 +239,7 @@ public class FlightSeatTypeRepository {
     public void updatePrice(int flightSeatTypeId, BigDecimal price) {
         String sql = "UPDATE flight_seat_types SET price = ?, approved = false WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setBigDecimal(1, price);

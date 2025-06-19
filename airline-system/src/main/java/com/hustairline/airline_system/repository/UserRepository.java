@@ -1,27 +1,30 @@
 package com.hustairline.airline_system.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import com.hustairline.airline_system.config.DatabaseConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.hustairline.airline_system.model.User;
 
 @Repository
-public class UserRepository {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/HUSTAirline";
-    private static final String USER = "postgres";
-    private static final String PASS = "NgH1A@2005";
+public class UserRepository extends AbstractJdbcRepository {
+
+    @Autowired
+    public UserRepository(DatabaseConfig dbConfig) {
+        super(dbConfig);
+    }
 
     public User findByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
         User user = null;
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, username);
@@ -45,7 +48,7 @@ public class UserRepository {
     public User createUser(User user) {
         String sql = "INSERT INTO users (username, password, role, approved) VALUES (?, ?, ?, ?) RETURNING id";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             stmt.setString(1, user.getUsername());
@@ -74,7 +77,7 @@ public class UserRepository {
         String sql = "SELECT * FROM users ORDER BY role, username";
         List<User> users = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -99,7 +102,7 @@ public class UserRepository {
     public boolean usernameExists(String username) {
         String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, username);
@@ -120,7 +123,7 @@ public class UserRepository {
     public boolean deleteUser(int userId) {
         String sql = "DELETE FROM users WHERE id = ? AND role IN ('ADMIN', 'MANAGER')";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, userId);
@@ -137,7 +140,7 @@ public class UserRepository {
     public boolean approveUser(int userId) {
         String sql = "UPDATE users SET approved = true WHERE id = ? AND role IN ('ADMIN', 'MANAGER')";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, userId);
@@ -154,7 +157,7 @@ public class UserRepository {
     public boolean rejectUser(int userId) {
         String sql = "DELETE FROM users WHERE id = ? AND role IN ('ADMIN', 'MANAGER') AND approved = false";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, userId);
@@ -172,7 +175,7 @@ public class UserRepository {
         String sql = "SELECT * FROM users WHERE approved = false AND role IN ('ADMIN', 'MANAGER') ORDER BY role, username";
         List<User> users = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {

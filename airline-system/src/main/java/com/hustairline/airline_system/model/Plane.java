@@ -1,7 +1,10 @@
 package com.hustairline.airline_system.model;
 
-public class Plane {
-    private int id;
+/**
+ * Plane entity extending BaseEntity
+ * Demonstrates Inheritance and Abstract class implementation
+ */
+public class Plane extends BaseEntity {
     private String model;
     private String size;  // Just 'small' or 'big'
     private boolean approved;
@@ -9,12 +12,42 @@ public class Plane {
     private boolean canModifySeats = true;
     private String modificationBlockedReason;
 
-    public int getId() {
-        return id;
+    // Constructors
+    public Plane() {
+        super();
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Plane(String model, String size) {
+        super();
+        this.model = model;
+        this.size = size;
+        this.approved = false;
+    }
+
+    // Implementation of abstract methods from BaseEntity
+    @Override
+    public boolean isValid() {
+        return model != null && !model.trim().isEmpty() &&
+               size != null && (size.equalsIgnoreCase("small") || size.equalsIgnoreCase("big"));
+    }
+
+    @Override
+    public String getEntityType() {
+        return "Plane";
+    }
+
+    // Business logic methods
+    public boolean canAcceptBookings() {
+        return approved && isActive() && assignedSeatsCount > 0;
+    }
+
+    public void approve() {
+        this.approved = true;
+        touch(); // Update timestamp from parent class
+    }
+
+    public void reject() {
+        softDelete(); // Use parent class method
     }
 
     public String getModel() {

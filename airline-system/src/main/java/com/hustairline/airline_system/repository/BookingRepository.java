@@ -1,7 +1,6 @@
 package com.hustairline.airline_system.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,19 +9,23 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hustairline.airline_system.config.DatabaseConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.hustairline.airline_system.model.Booking;
 
 @Repository
-public class BookingRepository {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/HUSTAirline";
-    private static final String USER = "postgres";
-    private static final String PASS = "NgH1A@2005";
+public class BookingRepository extends AbstractJdbcRepository {
+
+    @Autowired
+    public BookingRepository(DatabaseConfig dbConfig) {
+        super(dbConfig);
+    }
 
     public Booking createBooking(Booking booking) {
         String sql = "INSERT INTO bookings (user_id, flight_seat_assignment_id, status, booking_time) VALUES (?, ?, ?, ?) RETURNING id";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             stmt.setInt(1, booking.getUserId());
@@ -77,7 +80,7 @@ public class BookingRepository {
         
         List<Booking> bookings = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, userId);
@@ -118,7 +121,7 @@ public class BookingRepository {
     public void updateBookingStatus(int bookingId, String status) {
         String sql = "UPDATE bookings SET status = ?, payment_time = ? WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, status);
@@ -161,7 +164,7 @@ public class BookingRepository {
             WHERE b.id = ?
             """;
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, bookingId);
@@ -202,7 +205,7 @@ public class BookingRepository {
     public boolean hasBookingForSeat(int flightSeatAssignmentId) {
         String sql = "SELECT COUNT(*) FROM bookings WHERE flight_seat_assignment_id = ? AND status IN ('PENDING', 'PAID')";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, flightSeatAssignmentId);
@@ -223,7 +226,7 @@ public class BookingRepository {
     public boolean cancelBooking(int bookingId, int userId) {
         String sql = "UPDATE bookings SET status = 'CANCELLED' WHERE id = ? AND user_id = ? AND status IN ('PENDING', 'PAID')";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, bookingId);
@@ -241,7 +244,7 @@ public class BookingRepository {
     public int getFlightSeatAssignmentIdByBookingId(int bookingId) {
         String sql = "SELECT flight_seat_assignment_id FROM bookings WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, bookingId);

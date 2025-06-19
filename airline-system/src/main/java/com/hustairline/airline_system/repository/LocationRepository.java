@@ -1,7 +1,6 @@
 package com.hustairline.airline_system.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,19 +8,23 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hustairline.airline_system.config.DatabaseConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.hustairline.airline_system.model.Location;
 
 @Repository
-public class LocationRepository {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/HUSTAirline";
-    private static final String USER = "postgres";
-    private static final String PASS = "NgH1A@2005";
+public class LocationRepository extends AbstractJdbcRepository {
+
+    @Autowired
+    public LocationRepository(DatabaseConfig dbConfig) {
+        super(dbConfig);
+    }
 
     public boolean existsByCityAndCountry(String city, String country) {
         String sql = "SELECT COUNT(*) FROM locations WHERE LOWER(city) = LOWER(?) AND LOWER(country) = LOWER(?)";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, city);
@@ -47,7 +50,7 @@ public class LocationRepository {
 
         String sql = "INSERT INTO locations (city, country) VALUES (?, ?) RETURNING id";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             stmt.setString(1, location.getCity());
@@ -74,7 +77,7 @@ public class LocationRepository {
         String sql = "SELECT * FROM locations ORDER BY country, city";
         List<Location> locations = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -97,7 +100,7 @@ public class LocationRepository {
     public Location findById(int id) {
         String sql = "SELECT * FROM locations WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, id);
@@ -122,7 +125,7 @@ public class LocationRepository {
     public void deleteLocation(int locationId) {
         String sql = "DELETE FROM locations WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, locationId);
@@ -136,7 +139,7 @@ public class LocationRepository {
     public void updateLocation(Location location) {
         String sql = "UPDATE locations SET city = ?, country = ? WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, location.getCity());

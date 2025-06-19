@@ -1,7 +1,6 @@
 package com.hustairline.airline_system.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,19 +8,23 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hustairline.airline_system.config.DatabaseConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.hustairline.airline_system.model.Plane;
 
 @Repository
-public class PlaneRepository {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/HUSTAirline";
-    private static final String USER = "postgres";
-    private static final String PASS = "NgH1A@2005";
+public class PlaneRepository extends AbstractJdbcRepository {
+
+    @Autowired
+    public PlaneRepository(DatabaseConfig dbConfig) {
+        super(dbConfig);
+    }
 
     public boolean existsByModel(String model) {
         String sql = "SELECT COUNT(*) FROM planes WHERE LOWER(model) = LOWER(?)";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, model.toLowerCase());
@@ -45,7 +48,7 @@ public class PlaneRepository {
 
         String sql = "INSERT INTO planes (model, size, approved) VALUES (?, ?, ?) RETURNING id";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             stmt.setString(1, plane.getModel());
@@ -73,7 +76,7 @@ public class PlaneRepository {
         String sql = "SELECT * FROM planes ORDER BY id";
         List<Plane> planes = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -105,7 +108,7 @@ public class PlaneRepository {
             """;
         List<Plane> planes = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -130,7 +133,7 @@ public class PlaneRepository {
     public Plane findById(int id) {
         String sql = "SELECT * FROM planes WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, id);
@@ -157,7 +160,7 @@ public class PlaneRepository {
         String sql = "SELECT * FROM planes WHERE approved = false ORDER BY id";
         List<Plane> planes = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -181,7 +184,7 @@ public class PlaneRepository {
     public void updateApprovalStatus(int planeId, boolean approved) {
         String sql = "UPDATE planes SET approved = ? WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setBoolean(1, approved);
@@ -194,7 +197,7 @@ public class PlaneRepository {
     }
 
     public void deletePlane(int planeId) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
+        try (Connection conn = getConnection()) {
             // Start transaction
             conn.setAutoCommit(false);
             

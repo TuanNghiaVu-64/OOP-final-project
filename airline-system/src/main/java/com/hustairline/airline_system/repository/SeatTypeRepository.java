@@ -1,7 +1,6 @@
 package com.hustairline.airline_system.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,19 +8,23 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hustairline.airline_system.config.DatabaseConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.hustairline.airline_system.model.SeatType;
 
 @Repository
-public class SeatTypeRepository {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/HUSTAirline";
-    private static final String USER = "postgres";
-    private static final String PASS = "NgH1A@2005";
+public class SeatTypeRepository extends AbstractJdbcRepository {
+
+    @Autowired
+    public SeatTypeRepository(DatabaseConfig dbConfig) {
+        super(dbConfig);
+    }
 
     public boolean existsByName(String name) {
         String sql = "SELECT COUNT(*) FROM seat_types WHERE LOWER(name) = LOWER(?)";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, name.toLowerCase());
@@ -45,7 +48,7 @@ public class SeatTypeRepository {
 
         String sql = "INSERT INTO seat_types (name, features, approved) VALUES (?, ?, ?) RETURNING id";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             stmt.setString(1, seatType.getName());
@@ -73,7 +76,7 @@ public class SeatTypeRepository {
         String sql = "SELECT * FROM seat_types ORDER BY id";
         List<SeatType> seatTypes = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -104,7 +107,7 @@ public class SeatTypeRepository {
         String sql = "SELECT * FROM seat_types WHERE approved = true ORDER BY id";
         List<SeatType> seatTypes = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -135,7 +138,7 @@ public class SeatTypeRepository {
     public void approveSeatType(int seatTypeId) {
         String sql = "UPDATE seat_types SET approved = true WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, seatTypeId);
@@ -150,7 +153,7 @@ public class SeatTypeRepository {
     public void rejectSeatType(int seatTypeId) {
         String sql = "DELETE FROM seat_types WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, seatTypeId);
@@ -166,7 +169,7 @@ public class SeatTypeRepository {
         String sql = "SELECT * FROM seat_types WHERE approved = false ORDER BY id";
         List<SeatType> seatTypes = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -190,7 +193,7 @@ public class SeatTypeRepository {
     public void deleteSeatType(int seatTypeId) {
         String sql = "DELETE FROM seat_types WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, seatTypeId);

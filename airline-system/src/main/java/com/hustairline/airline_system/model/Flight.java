@@ -2,8 +2,7 @@ package com.hustairline.airline_system.model;
 
 import java.time.LocalDateTime;
 
-public class Flight {
-    private int id;
+public class Flight extends BaseEntity {
     private int planeId;
     private int originId;
     private int destinationId;
@@ -17,14 +16,6 @@ public class Flight {
     private String originCountry;
     private String destinationCity;
     private String destinationCountry;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public int getPlaneId() {
         return planeId;
@@ -112,5 +103,16 @@ public class Flight {
 
     public void setDestinationCountry(String destinationCountry) {
         this.destinationCountry = destinationCountry;
+    }
+
+    @Override
+    public boolean isValid() {
+        return planeId > 0 && originId > 0 && destinationId > 0
+                && departureTime != null && arrivalTime != null;
+    }
+
+    @Override
+    public String getEntityType() {
+        return "Flight";
     }
 } 

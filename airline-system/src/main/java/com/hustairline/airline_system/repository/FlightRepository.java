@@ -1,7 +1,6 @@
 package com.hustairline.airline_system.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,19 +9,23 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hustairline.airline_system.config.DatabaseConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.hustairline.airline_system.model.Flight;
 
 @Repository
-public class FlightRepository {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/HUSTAirline";
-    private static final String USER = "postgres";
-    private static final String PASS = "NgH1A@2005";
+public class FlightRepository extends AbstractJdbcRepository {
+
+    @Autowired
+    public FlightRepository(DatabaseConfig dbConfig) {
+        super(dbConfig);
+    }
 
     public Flight addFlight(Flight flight) {
         String sql = "INSERT INTO flights (plane_id, origin_id, destination_id, departure_time, arrival_time, approved) VALUES (?, ?, ?, ?, ?, ?) RETURNING id";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             stmt.setInt(1, flight.getPlaneId());
@@ -63,7 +66,7 @@ public class FlightRepository {
             """;
         List<Flight> flights = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -107,7 +110,7 @@ public class FlightRepository {
             WHERE f.id = ?
             """;
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, id);
@@ -144,7 +147,7 @@ public class FlightRepository {
     public void deleteFlight(int flightId) {
         String sql = "DELETE FROM flights WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, flightId);
@@ -158,7 +161,7 @@ public class FlightRepository {
     public void updateApprovalStatus(int flightId, boolean approved) {
         String sql = "UPDATE flights SET approved = ? WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setBoolean(1, approved);
@@ -184,7 +187,7 @@ public class FlightRepository {
             """;
         List<Flight> flights = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             try (ResultSet rs = stmt.executeQuery()) {
@@ -249,7 +252,7 @@ public class FlightRepository {
         
         List<Flight> flights = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
             
             for (int i = 0; i < params.size(); i++) {

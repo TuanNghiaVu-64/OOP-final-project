@@ -1,27 +1,30 @@
 package com.hustairline.airline_system.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hustairline.airline_system.config.DatabaseConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.hustairline.airline_system.model.Seat;
 
 @Repository
-public class SeatRepository {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/HUSTAirline";
-    private static final String USER = "postgres";
-    private static final String PASS = "NgH1A@2005";
+public class SeatRepository extends AbstractJdbcRepository {
+
+    @Autowired
+    public SeatRepository(DatabaseConfig dbConfig) {
+        super(dbConfig);
+    }
 
     public List<Seat> getSeatsForPlane(int planeId) {
         String sql = "SELECT * FROM seats WHERE plane_id = ? ORDER BY row, col";
         List<Seat> seats = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, planeId);
@@ -49,7 +52,7 @@ public class SeatRepository {
     public void initializeSeatsForPlane(int planeId, String size) {
         String sql = "INSERT INTO seats (plane_id, seat_code, row, col) VALUES (?, ?, ?, ?)";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             if ("small".equalsIgnoreCase(size)) {
@@ -136,7 +139,7 @@ public class SeatRepository {
     public void updateSeatTypes(int planeId, List<Seat> seats) {
         String sql = "UPDATE seats SET seat_type_id = ? WHERE plane_id = ? AND row = ? AND col = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             for (Seat seat : seats) {
@@ -161,7 +164,7 @@ public class SeatRepository {
     public boolean areAllSeatsAssigned(int planeId) {
         String sql = "SELECT COUNT(*) as total_seats, COUNT(seat_type_id) as assigned_seats FROM seats WHERE plane_id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, planeId);
@@ -184,7 +187,7 @@ public class SeatRepository {
         String sql = "SELECT DISTINCT seat_type_id FROM seats WHERE plane_id = ? AND seat_type_id IS NOT NULL";
         List<Integer> seatTypeIds = new ArrayList<>();
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, planeId);
