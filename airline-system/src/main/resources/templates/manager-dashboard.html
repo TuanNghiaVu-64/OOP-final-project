@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manager Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    <div class="dashboard-container">
+        <h2>Welcome, Manager</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h3><i class="fas fa-plane-departure"></i> Review Flights</h3>
+                <p>Review and approve flight schedules created by admins.</p>
+                <div class="card-actions">
+                    <a th:href="@{/flights/review}" class="btn btn-primary">
+                        <i class="fas fa-tasks"></i> Review Flights
+                    </a>
+                    <a th:href="@{/flights/manager-list}" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> View All
+                    </a>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-plane"></i> Review Planes</h3>
+                <p>Review and approve new planes added by admins.</p>
+                <div class="card-actions">
+                    <a th:href="@{/planes/review}" class="btn btn-primary">
+                        <i class="fas fa-tasks"></i> Review Planes
+                    </a>
+                    <a th:href="@{/planes/manager-list}" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> View All
+                    </a>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-chair"></i> Review Seat Types</h3>
+                <p>Review and approve new seat types added by admins.</p>
+                <div class="card-actions">
+                    <a th:href="@{/seat-types/pending}" class="btn btn-primary">
+                        <i class="fas fa-tasks"></i> Review Seat Types
+                    </a>
+                    <a th:href="@{/seat-types/manager-list}" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> View All
+                    </a>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-dollar-sign"></i> Flight Pricing</h3>
+                <p>Review and manage flight pricing set by admins.</p>
+                <div class="card-actions">
+                    <a th:href="@{/flight-pricing/review}" class="btn btn-primary">
+                        <i class="fas fa-tasks"></i> Review Pricing
+                    </a>
+                    <a th:href="@{/flight-pricing/approved}" class="btn btn-secondary">
+                        <i class="fas fa-check-circle"></i> View Approved
+                    </a>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-users"></i> User Management</h3>
+                <p>Review and approve admin/manager accounts created by admins.</p>
+                <div class="card-actions">
+                    <a th:href="@{/users/pending}" class="btn btn-primary">
+                        <i class="fas fa-tasks"></i> Review Users
+                    </a>
+                                    <a th:href="@{/users/view}" class="btn btn-secondary">
+                    <i class="fas fa-list"></i> View All Users
+                </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

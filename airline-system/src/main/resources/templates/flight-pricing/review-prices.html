@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Review Flight Pricing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/forms.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <div class="dashboard-container">
+        <div class="content-header">
+            <div class="header-left">
+                <a th:href="@{/manager-dashboard}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2>Review Flight Pricing</h2>
+            </div>
+        </div>
+
+        <div th:if="${success}" class="flash-message flash-success" th:text="${success}"></div>
+        <div th:if="${error}" class="flash-message flash-error" th:text="${error}"></div>
+
+        <div th:if="${not #maps.isEmpty(groupedFlightPrices)}">
+            <div th:each="flightGroup : ${groupedFlightPrices.entrySet()}" class="card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-plane-departure"></i> 
+                        <span th:text="${flightGroup.value[0].flightPlaneModel}"></span>
+                        - Flight #<span th:text="${flightGroup.key}"></span>
+                    </h3>
+                    <p>
+                        <strong>Route:</strong> <span th:text="${flightGroup.value[0].flightOrigin + ' → ' + flightGroup.value[0].flightDestination}"></span> |
+                        <strong>Departure:</strong> <span th:text="${#dates.format(flightGroup.value[0].flightDepartureTime, 'MMM dd, yyyy HH:mm')}"></span>
+                    </p>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Seat Type</th>
+                                <th>Features</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="pricing, iterStat : ${flightGroup.value}">
+                                <td th:text="${iterStat.count}"></td>
+                                <td th:text="${pricing.seatTypeName}"></td>
+                                <td th:text="${pricing.seatTypeFeatures}"></td>
+                                <td>$<span th:text="${#numbers.formatDecimal(pricing.price, 1, 2)}"></span></td>
+                                <td>
+                                    <span th:if="${pricing.approved}" class="status-badge approved">
+                                        <i class="fas fa-check-circle"></i> Approved
+                                    </span>
+                                    <span th:if="${!pricing.approved}" class="status-badge pending">
+                                        <i class="fas fa-clock"></i> Pending
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card-actions">
+                    <button th:onclick="'approveAllForFlight(' + ${flightGroup.key} + ')'" 
+                            class="btn btn-primary">
+                        <i class="fas fa-check-double"></i> Approve All
+                    </button>
+                    <button th:onclick="'rejectAllForFlight(' + ${flightGroup.key} + ')'" 
+                            class="btn btn-secondary">
+                        <i class="fas fa-times-circle"></i> Reject All
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div th:if="${#maps.isEmpty(groupedFlightPrices)}" class="table-container">
+            <div class="no-data">
+                No flight pricing pending review.
+            </div>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script type="module" th:src="@{/js/pages/flight-pricing.js}"></script>
+</body>
+</html> 

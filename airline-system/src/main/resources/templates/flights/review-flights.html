@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Review Flights</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <div class="dashboard-container">
+        <div class="content-header">
+            <div class="header-left">
+                <a th:href="@{/manager-dashboard}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2>Review Flights</h2>
+            </div>
+        </div>
+
+        <div th:if="${success}" class="flash-message flash-success" th:text="${success}"></div>
+        <div th:if="${error}" class="flash-message flash-error" th:text="${error}"></div>
+
+        <div class="table-container">
+            <table class="data-table" th:if="${not #lists.isEmpty(pendingFlights)}">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Aircraft</th>
+                        <th>Route</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="flight, iterStat : ${pendingFlights}">
+                        <td th:text="${iterStat.count}"></td>
+                        <td th:text="${flight.planeModel}"></td>
+                        <td>
+                            <div class="route-info">
+                                <strong th:text="${flight.originCity + ', ' + flight.originCountry}"></strong>
+                                <i class="fas fa-arrow-right" style="margin: 0 8px; color: #666;"></i>
+                                <strong th:text="${flight.destinationCity + ', ' + flight.destinationCountry}"></strong>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="datetime-info">
+                                <div th:text="${#temporals.format(flight.departureTime, 'MMM dd, yyyy')}"></div>
+                                <div style="font-size: 0.9em; color: #666;" 
+                                     th:text="${#temporals.format(flight.departureTime, 'HH:mm')}"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="datetime-info">
+                                <div th:text="${#temporals.format(flight.arrivalTime, 'MMM dd, yyyy')}"></div>
+                                <div style="font-size: 0.9em; color: #666;" 
+                                     th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></div>
+                            </div>
+                        </td>
+                        <td class="action-buttons">
+                            <button th:onclick="'approveFlight(' + ${flight.id} + ', ' + ${iterStat.count} + ')'" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button th:onclick="'rejectFlight(' + ${flight.id} + ', ' + ${iterStat.count} + ')'" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div th:if="${#lists.isEmpty(pendingFlights)}" class="no-data">
+                No flights pending approval.
+            </div>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script type="module" th:src="@{/js/pages/flights.js}"></script>
+</body>
+</html> 

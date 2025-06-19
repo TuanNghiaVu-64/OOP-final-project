@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Review Planes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <div class="dashboard-container">
+        <div class="content-header">
+            <div class="header-left">
+                <a th:href="@{/manager-dashboard}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2>Review Planes</h2>
+            </div>
+        </div>
+
+        <div th:if="${success}" class="flash-message flash-success" th:text="${success}"></div>
+        <div th:if="${error}" class="flash-message flash-error" th:text="${error}"></div>
+
+        <div class="table-container">
+            <table class="data-table" th:if="${not #lists.isEmpty(pendingPlanes)}">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Model</th>
+                        <th>Size</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="plane, iterStat : ${pendingPlanes}">
+                        <td th:text="${iterStat.count}"></td>
+                        <td th:text="${plane.model}"></td>
+                        <td th:text="${#strings.capitalize(plane.size)}"></td>
+                        <td class="action-buttons">
+                            <button th:onclick="'approvePlane(' + ${plane.id} + ', ' + ${iterStat.count} + ')'" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button th:onclick="'rejectPlane(' + ${plane.id} + ', ' + ${iterStat.count} + ')'" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div th:if="${#lists.isEmpty(pendingPlanes)}" class="no-data">
+                No planes pending approval.
+            </div>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script>
+    function approvePlane(planeId, rowNum) {
+        if (confirm('Are you sure you want to approve plane #' + rowNum + '?')) {
+            fetch('/planes/approve/' + planeId, {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(result => {
+                if (result === 'success') {
+                    location.reload();
+                } else {
+                    alert('Error: ' + result);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+    }
+
+    function rejectPlane(planeId, rowNum) {
+        if (confirm('Are you sure you want to reject plane #' + rowNum + '?')) {
+            fetch('/planes/reject/' + planeId, {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(result => {
+                if (result === 'success') {
+                    location.reload();
+                } else {
+                    alert('Error: ' + result);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+    }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div th:fragment="header" class="dashboard-header">
+        <div class="header-content">
+            <div class="user-menu">
+                <div class="user-icon" onclick="toggleDropdown()">
+                    <i class="fas fa-user"></i>
+                    <span th:text="${username}"></span>
+                </div>
+                <div class="dropdown-menu" id="userDropdown">
+                    <a th:href="@{/logout}" class="dropdown-item">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

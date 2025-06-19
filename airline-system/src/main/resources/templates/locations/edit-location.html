@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Location</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/forms.css}" rel="stylesheet">
+    <link th:href="@{/css/form-validation.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    
+    <div class="dashboard-container">
+        <div class="form-container">
+            <h2>Edit Location</h2>
+            
+            <div th:if="${success}" class="flash-message flash-success" th:text="${success}"></div>
+            <div th:if="${error}" class="flash-message flash-error" th:text="${error}"></div>
+            
+            <form th:action="@{/locations/edit/{id}(id=${location.id})}" method="post" id="editLocationForm" onsubmit="return validateLocationForm()">
+                <div class="form-group">
+                    <label for="city">City:</label>
+                    <input type="text" id="city" name="city" required 
+                           th:value="${location.city}"
+                           placeholder="e.g., Ho Chi Minh City, Hanoi, Bangkok" />
+                    <span class="field-error" id="city-error">Please enter a city name</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="country">Country:</label>
+                    <input type="text" id="country" name="country" required
+                           th:value="${location.country}"
+                           placeholder="e.g., Vietnam, Thailand, Singapore" />
+                    <span class="field-error" id="country-error">Please enter a country name</span>
+                </div>
+                
+                <div class="button-group">
+                    <a th:href="@{/locations/list}" class="back-button">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Location
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script type="module" th:src="@{/js/pages/locations.js}"></script>
+</body>
+</html> 

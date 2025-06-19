@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Flights - HUSTAirline</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/forms.css}" rel="stylesheet">
+    <link th:href="@{/css/customer-search-flights.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    <div class="dashboard-container">
+        <div th:if="${success}" class="flash-message flash-success" th:text="${success}"></div>
+        <div th:if="${error}" class="flash-message flash-error" th:text="${error}"></div>
+        
+        <!-- Top Navigation -->
+        <div class="top-navigation">
+            <a th:href="@{/customer-dashboard}" class="btn btn-secondary btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        
+        <div class="content-header">
+            <h2><i class="fas fa-search"></i> Search Flights</h2>
+        </div>
+        
+        <!-- Search Form -->
+        <div class="form-container">
+            <form th:action="@{/customer/search-flights}" method="post" class="search-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="originId">
+                            <i class="fas fa-plane-departure"></i> From
+                        </label>
+                        <select id="originId" name="originId" class="form-select form-select-large">
+                            <option value="">Any Origin</option>
+                            <option th:each="location : ${locations}" 
+                                    th:value="${location.id}" 
+                                    th:text="${location.city + ', ' + location.country}"
+                                    th:selected="${location.id == selectedOriginId}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="destinationId">
+                            <i class="fas fa-plane-arrival"></i> To
+                        </label>
+                        <select id="destinationId" name="destinationId" class="form-select form-select-large">
+                            <option value="">Any Destination</option>
+                            <option th:each="location : ${locations}" 
+                                    th:value="${location.id}" 
+                                    th:text="${location.city + ', ' + location.country}"
+                                    th:selected="${location.id == selectedDestinationId}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="departureDate">
+                            <i class="fas fa-calendar"></i> Departure Date
+                        </label>
+                        <input type="date" id="departureDate" name="departureDate" 
+                               th:value="${selectedDepartureDate}" class="form-input form-input-large">
+                    </div>
+                    <div class="form-group search-btn-group">
+                        <button type="submit" class="btn btn-primary btn-search btn-search-large">
+                            <i class="fas fa-search"></i> Search Flights
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Search Results -->
+        <div th:if="${flights != null}" class="content-section">
+            <div class="section-header">
+                <h3><i class="fas fa-list"></i> Available Flights</h3>
+                <span th:if="${!flights.empty}" class="result-count" th:text="${flights.size()} + ' flight(s) found'"></span>
+            </div>
+            
+            <div th:if="${flights.empty}" class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-plane-slash"></i>
+                </div>
+                <h3>No Flights Found</h3>
+                <p>No flights match your search criteria. Try adjusting your search parameters.</p>
+                <div class="empty-actions">
+                    <button type="button" onclick="clearFilters()" class="btn btn-secondary">
+                        <i class="fas fa-undo"></i> Clear Filters
+                    </button>
+                </div>
+            </div>
+            
+            <div th:unless="${flights.empty}" class="flights-grid">
+                <div th:each="flight : ${flights}" class="flight-card">
+                    <div class="flight-header">
+                        <div class="flight-number">
+                            <span class="flight-label">Flight</span>
+                            <span class="flight-id" th:text="'FL-' + ${flight.id}"></span>
+                        </div>
+                        <div class="aircraft-info">
+                            <i class="fas fa-plane"></i>
+                            <span th:text="${flight.planeModel}"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="flight-route">
+                        <div class="departure">
+                            <div class="location-code" th:text="${#strings.substring(flight.originCity, 0, 3).toUpperCase()}"></div>
+                            <div class="location-name" th:text="${flight.originCity}"></div>
+                            <div class="location-country" th:text="${flight.originCountry}"></div>
+                        </div>
+                        
+                        <div class="route-visual">
+                            <div class="route-line"></div>
+                            <i class="fas fa-plane route-plane"></i>
+                        </div>
+                        
+                        <div class="arrival">
+                            <div class="location-code" th:text="${#strings.substring(flight.destinationCity, 0, 3).toUpperCase()}"></div>
+                            <div class="location-name" th:text="${flight.destinationCity}"></div>
+                            <div class="location-country" th:text="${flight.destinationCountry}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="flight-times">
+                        <div class="time-info">
+                            <div class="time-label">Departure</div>
+                            <div class="time-value" th:text="${#temporals.format(flight.departureTime, 'HH:mm')}"></div>
+                            <div class="date-value" th:text="${#temporals.format(flight.departureTime, 'MMM dd, yyyy')}"></div>
+                        </div>
+                        <div class="duration">
+                            <i class="fas fa-clock"></i>
+                            <span>Duration</span>
+                        </div>
+                        <div class="time-info">
+                            <div class="time-label">Arrival</div>
+                            <div class="time-value" th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></div>
+                            <div class="date-value" th:text="${#temporals.format(flight.arrivalTime, 'MMM dd, yyyy')}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="flight-actions">
+                        <a th:href="@{/customer/book-flight/{id}(id=${flight.id})}" 
+                           class="btn btn-primary btn-book">
+                            <i class="fas fa-ticket-alt"></i> Select Seats
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Back to Top Button -->
+    <button id="backToTopBtn" class="back-to-top" title="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script th:src="@{/js/customer-search-flights.js}"></script>
+</body>
+</html> 

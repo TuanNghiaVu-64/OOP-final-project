@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Seat Assignment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/seat-assignment.css}" rel="stylesheet">
+    <link th:if="${plane.size == '100-seat'}" th:href="@{/css/seat-assignment-big.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    <div class="dashboard-container">
+        <div class="content-header">
+            <div class="header-left">
+                <a th:href="@{/seats/manage}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2>Seat Assignment</h2>
+            </div>
+            <div class="header-right">
+                <div class="button-row">
+                    <button id="assignHighLevel" class="btn btn-secondary">
+                        <i class="fas fa-chair"></i> Assign High Level
+                    </button>
+                    <button id="assignNormal" class="btn btn-secondary">
+                        <i class="fas fa-chair"></i> Assign Normal
+                    </button>
+                    <button id="assignAll" class="btn btn-secondary">
+                        <i class="fas fa-chair"></i> Assign All
+                    </button>
+                    <button id="saveButton" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+                <div class="button-row">
+                    <button id="unassignHighLevel" class="btn btn-danger">
+                        <i class="fas fa-times"></i> Unassign High Level
+                    </button>
+                    <button id="unassignNormal" class="btn btn-danger">
+                        <i class="fas fa-times"></i> Unassign Normal
+                    </button>
+                    <button id="unassignAll" class="btn btn-danger">
+                        <i class="fas fa-times"></i> Unassign All
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="seat-assignment-container">
+            <div class="seat-types-panel">
+                <h3>Seat Types</h3>
+                <div th:if="${#lists.isEmpty(seatTypes)}" class="no-seat-types">
+                    <p>No approved seat types available. Please wait for seat types to be approved by a manager.</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(seatTypes)}" class="seat-type-list">
+                    <div th:each="type : ${seatTypes}" 
+                         class="seat-type-item"
+                         th:data-type-id="${type.id}"
+                         th:style="'border-color: ' + ${type.color != null ? type.color : '#ddd'}">
+                        <div class="seat-type-header">
+                            <span class="seat-type-name" th:text="${type.name}"></span>
+                            <div class="seat-type-color" th:style="'background-color: ' + ${type.color != null ? type.color : '#f5f5f5'}"></div>
+                        </div>
+                        <div class="seat-type-features">
+                            <small th:text="${type.features}"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="seat-grid" th:attr="data-plane-size=${plane.size}">
+                <div class="plane-icon">
+                    <i class="fas fa-plane"></i>
+                </div>
+
+                <!-- Small Plane Layout -->
+                <div class="grid-container" th:if="${plane.size == 'small'}">
+                    <div class="section">
+                        <div class="section-title">High-Level Class</div>
+                        <!-- Rows 1-3 -->
+                        <div class="row" th:each="row : ${#numbers.sequence(1, 3)}" th:attr="data-row=${row}">
+                            <div class="row-number" th:text="${row}"></div>
+                            <div class="seats">
+                                <div th:each="seat : ${seatMap.get(row)}"
+                                     class="seat"
+                                     th:attr="data-row=${seat.row},data-col=${seat.col}"
+                                     th:data-seat-code="${seat.seatCode}"
+                                     th:data-type-id="${seat.seatTypeId}">
+                                    <span class="seat-code" th:text="${seat.seatCode}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Row 4 with single seat -->
+                        <div class="row" data-row="4">
+                            <div class="row-number">4</div>
+                            <div class="seats">
+                                <div th:each="seat : ${seatMap.get(4)}"
+                                     class="seat"
+                                     th:if="${seat.col == 1}"
+                                     th:attr="data-row=${seat.row},data-col=${seat.col}"
+                                     th:data-seat-code="${seat.seatCode}"
+                                     th:data-type-id="${seat.seatTypeId}">
+                                    <span class="seat-code" th:text="${seat.seatCode}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Rows 5-14 with 2-2 configuration -->
+                        <div class="section-title">Normal Class</div>
+                        <div class="row" th:each="row : ${#numbers.sequence(5, 14)}" th:attr="data-row=${row}">
+                            <div class="row-number" th:text="${row}"></div>
+                            <div class="seats">
+                                <div th:each="seat : ${seatMap.get(row)}"
+                                     class="seat"
+                                     th:attr="data-row=${seat.row},data-col=${seat.col}"
+                                     th:data-seat-code="${seat.seatCode}"
+                                     th:data-type-id="${seat.seatTypeId}">
+                                    <span class="seat-code" th:text="${seat.seatCode}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Big Plane Layout -->
+                <div class="grid-container" th:if="${plane.size == '100-seat'}">
+                    <div class="section">
+                        <div class="row" th:each="row : ${#numbers.sequence(1, 25)}" th:attr="data-row=${row}">
+                            <div class="row-number" th:text="${row}"></div>
+                            <div class="seats">
+                                <div th:each="seat : ${seatMap.get(row)}"
+                                     class="seat"
+                                     th:attr="data-row=${seat.row},data-col=${seat.col}"
+                                     th:data-seat-code="${seat.seatCode}"
+                                     th:data-type-id="${seat.seatTypeId}">
+                                    <span class="seat-code" th:text="${seat.seatCode}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script th:inline="javascript">
+        const planeId = /*[[${planeId}]]*/ null;
+        let selectedTypeId = null;
+        let selectedSeats = new Set();
+        const seatTypes = /*[[${seatTypes}]]*/ [];
+        
+        // Generate colors for seat types if not already set
+        function generateColor(index) {
+            const hue = (index * 137.508) % 360; // Golden angle approximation
+            return `hsl(${hue}, 70%, 90%)`;
+        }
+        
+        // Assign colors to seat types that don't have one
+        seatTypes.forEach((type, index) => {
+            if (!type.color) {
+                type.color = generateColor(index);
+            }
+        });
+
+        // Initialize seat type item colors (for the small color square inside the card) on page load
+        document.querySelectorAll('.seat-type-item').forEach(item => {
+            const type = seatTypes.find(t => t.id === parseInt(item.dataset.typeId));
+            if (type) {
+                const colorSwatch = item.querySelector('.seat-type-color');
+                if (colorSwatch) {
+                    colorSwatch.style.backgroundColor = type.color;
+                }
+            }
+            // IMPORTANT: Ensure default border color for all items is transparent on load
+            item.style.borderColor = 'transparent'; 
+        });
+
+        // Seat type selection logic: Dynamically change border color on click
+        document.querySelectorAll('.seat-type-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const isAlreadySelected = item.classList.contains('selected');
+
+                // Deselect all items first
+                document.querySelectorAll('.seat-type-item').forEach(i => {
+                    i.classList.remove('selected');
+                    i.style.borderColor = 'transparent'; // Reset border color to transparent
+                });
+
+                if (!isAlreadySelected) {
+                    // If the clicked item was NOT already selected, select it
+                    item.classList.add('selected');
+                    selectedTypeId = item.dataset.typeId;
+                    const selectedTypeItem = seatTypes.find(type => type.id === parseInt(selectedTypeId));
+                    if (selectedTypeItem) {
+                        item.style.borderColor = selectedTypeItem.color;
+                    }
+                } else {
+                    // If the clicked item WAS already selected, deselect it
+                    selectedTypeId = null;
+                }
+            });
+        });
+
+        // Function to assign seat type to a seat
+        function assignSeatType(seat) {
+            if (!selectedTypeId) {
+                alert('Please select a seat type first');
+                return;
+            }
+            const selectedType = seatTypes.find(type => type.id === parseInt(selectedTypeId));
+            if (selectedType) {
+                seat.dataset.typeId = selectedTypeId;
+                seat.className = 'seat';
+                seat.style.backgroundColor = selectedType.color;
+                seat.style.borderColor = selectedType.color;
+            }
+        }
+
+        // Seat selection logic: Apply/remove colors to actual seats
+        document.querySelectorAll('.seat').forEach(seat => {
+            seat.addEventListener('click', () => {
+                const currentSeatTypeId = seat.dataset.typeId;
+
+                if (currentSeatTypeId) {
+                    // If the seat is already assigned, deselect it
+                    seat.dataset.typeId = '';
+                    seat.className = 'seat'; // Reset class to remove any color-related classes
+                    seat.style.backgroundColor = '';
+                    seat.style.borderColor = '#ddd'; // Set to default border color
+                } else {
+                    // If the seat is unassigned, proceed with assignment
+                    assignSeatType(seat);
+                }
+            });
+
+            // Initialize seat colors based on existing assignments on page load
+            if (seat.dataset.typeId) {
+                const type = seatTypes.find(t => t.id === parseInt(seat.dataset.typeId));
+                if (type) {
+                    seat.style.backgroundColor = type.color;
+                    seat.style.borderColor = type.color;
+                }
+            } else {
+                // Ensure unassigned seats have default styling on load
+                seat.style.backgroundColor = '';
+                seat.style.borderColor = '#ddd';
+            }
+        });
+
+        // Assign High Level seats
+        document.getElementById('assignHighLevel').addEventListener('click', () => {
+            if (!selectedTypeId) {
+                alert('Please select a seat type first');
+                return;
+            }
+            // Assign to rows 1-4
+            for (let row = 1; row <= 4; row++) {
+                document.querySelectorAll(`.row[data-row="${row}"] .seat`).forEach(seat => {
+                    assignSeatType(seat);
+                });
+            }
+        });
+
+        // Assign Normal seats
+        document.getElementById('assignNormal').addEventListener('click', () => {
+            if (!selectedTypeId) {
+                alert('Please select a seat type first');
+                return;
+            }
+            // Assign to rows 5-14
+            for (let row = 5; row <= 14; row++) {
+                document.querySelectorAll(`.row[data-row="${row}"] .seat`).forEach(seat => {
+                    assignSeatType(seat);
+                });
+            }
+        });
+
+        // Assign All seats
+        document.getElementById('assignAll').addEventListener('click', () => {
+            if (!selectedTypeId) {
+                alert('Please select a seat type first');
+                return;
+            }
+            document.querySelectorAll('.seat').forEach(seat => {
+                assignSeatType(seat);
+            });
+        });
+
+        // Function to unassign seat type from a seat
+        function unassignSeatType(seat) {
+            seat.dataset.typeId = '';
+            seat.className = 'seat';
+            seat.style.backgroundColor = '';
+            seat.style.borderColor = '#ddd';
+        }
+
+        // Unassign High Level seats
+        document.getElementById('unassignHighLevel').addEventListener('click', () => {
+            // Unassign rows 1-4
+            for (let row = 1; row <= 4; row++) {
+                document.querySelectorAll(`.row[data-row="${row}"] .seat`).forEach(seat => {
+                    unassignSeatType(seat);
+                });
+            }
+        });
+
+        // Unassign Normal seats
+        document.getElementById('unassignNormal').addEventListener('click', () => {
+            // Unassign rows 5-14
+            for (let row = 5; row <= 14; row++) {
+                document.querySelectorAll(`.row[data-row="${row}"] .seat`).forEach(seat => {
+                    unassignSeatType(seat);
+                });
+            }
+        });
+
+        // Unassign All seats
+        document.getElementById('unassignAll').addEventListener('click', () => {
+            document.querySelectorAll('.seat').forEach(seat => {
+                unassignSeatType(seat);
+            });
+        });
+
+        // Save changes
+        document.getElementById('saveButton').addEventListener('click', async () => {
+            const seats = [];
+            document.querySelectorAll('.seat').forEach(seat => {
+                seats.push({
+                    row: parseInt(seat.dataset.row),
+                    col: parseInt(seat.dataset.col),
+                    seatCode: seat.dataset.seatCode,
+                    seatTypeId: seat.dataset.typeId ? parseInt(seat.dataset.typeId) : null
+                });
+            });
+
+            try {
+                const response = await fetch(`/seats/assign/${planeId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(seats)
+                });
+
+                const result = await response.text();
+
+                if (response.ok) {
+                    if (result.startsWith('error:')) {
+                        // Show detailed error message from server
+                        alert(result.substring(6)); // Remove 'error:' prefix
+                    } else {
+                        // Success
+                        alert('Seat assignments saved successfully!');
+                        window.location.reload();
+                    }
+                } else {
+                    alert('Error saving seat assignments');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error saving seat assignments');
+            }
+        });
+    </script>
+</body>
+</html> 

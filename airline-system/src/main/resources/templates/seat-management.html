@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Seat Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    <div class="dashboard-container">
+        <div class="content-header">
+            <div class="header-left">
+                <a th:href="@{/admin-dashboard}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2>Select Plane for Seat Layout</h2>
+            </div>
+        </div>
+
+        <div th:if="${param.error}" class="flash-message flash-error" th:text="${param.error}"></div>
+
+        <div class="table-container">
+            <table class="data-table" th:if="${not #lists.isEmpty(planes)}">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Size</th>
+                        <th>Total Seats</th>
+                        <th>Assigned Seats</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="plane : ${planes}">
+                        <td th:text="${plane.model}"></td>
+                        <td th:text="${#strings.capitalize(plane.size)}"></td>
+                        <td th:text="${plane.size == 'small' ? '50' : '100'}"></td>
+                        <td>
+                            <span th:text="${plane.assignedSeatsCount}"></span>
+                            <span> / </span>
+                            <span th:text="${plane.size == 'small' ? '50' : '100'}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${plane.canModifySeats}" class="status-badge approved">
+                                <i class="fas fa-edit"></i> Modifiable
+                            </span>
+                            <span th:unless="${plane.canModifySeats}" class="status-badge locked" 
+                                  th:title="${plane.modificationBlockedReason}">
+                                <i class="fas fa-lock"></i> Locked
+                            </span>
+                        </td>
+                        <td>
+                            <a th:if="${plane.canModifySeats}" 
+                               th:href="@{/seats/assign/{id}(id=${plane.id})}" 
+                               class="btn btn-primary">
+                                <i class="fas fa-chair"></i> Assign Seats
+                            </a>
+                            <button th:unless="${plane.canModifySeats}" 
+                                    class="btn btn-secondary" 
+                                    disabled 
+                                    th:title="${plane.modificationBlockedReason}">
+                                <i class="fas fa-lock"></i> Locked
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div th:if="${#lists.isEmpty(planes)}" class="no-data">
+                No approved planes available for seat assignment.
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script th:inline="javascript">
+        const planeId = /*[[${planeId}]]*/ null;
+        let selectedTypeId = null;
+        let selectedSeats = new Set();
+        const seatTypes = /*[[${seatTypes}]]*/ [];
+        
+        // Generate colors for seat types if not already set
+    </script>
+</body>
+</html> 

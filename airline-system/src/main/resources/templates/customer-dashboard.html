@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/forms.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    <div class="dashboard-container">
+        <div th:if="${success}" class="flash-message flash-success" th:text="${success}"></div>
+        <div th:if="${error}" class="flash-message flash-error" th:text="${error}"></div>
+        
+        <h2>Welcome, Customer</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h3><i class="fas fa-search"></i> Search Flights</h3>
+                <p>Find and compare flights by destination, date, and price.</p>
+                <div class="card-actions">
+                    <a th:href="@{/customer/search-flights}" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search Flights
+                    </a>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-ticket-alt"></i> My Bookings</h3>
+                <p>View your upcoming flights and seat details.</p>
+                <div class="card-actions">
+                    <a th:href="@{/customer/my-bookings}" class="btn btn-primary">
+                        <i class="fas fa-list"></i> View Bookings
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

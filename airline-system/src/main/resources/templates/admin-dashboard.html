@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/forms.css}" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    <div class="dashboard-container">
+        <div th:if="${success}" class="flash-message flash-success" th:text="${success}"></div>
+        <div th:if="${error}" class="flash-message flash-error" th:text="${error}"></div>
+        
+        <h2>Welcome, Admin</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h3><i class="fas fa-plane-departure"></i> Manage Flights</h3>
+                <p>Create or modify flight details and schedules.</p>
+                <div class="card-actions">
+                    <a th:href="@{/flights/add}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Flight
+                    </a>
+                    <a th:href="@{/flights/list}" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> View All
+                    </a>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-plane"></i> Manage Planes</h3>
+                <p>Add and configure aircraft for the airline fleet.</p>
+                <div class="card-actions">
+                    <a th:href="@{/planes/add}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Plane
+                    </a>
+                    <a th:href="@{/planes/list}" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> View All
+                    </a>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-chair"></i> Manage Seat Types</h3>
+                <p>Add and configure different types of seats available.</p>
+                <div class="card-actions">
+                    <a th:href="@{/seat-types/add}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Type
+                    </a>
+                    <a th:href="@{/seat-types/list}" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> View All
+                    </a>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-map-marker-alt"></i> Manage Locations</h3>
+                <p>Add and manage flight destinations and origins.</p>
+                <div class="card-actions">
+                    <a th:href="@{/locations/add}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Location
+                    </a>
+                    <a th:href="@{/locations/list}" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> View All
+                    </a>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-th"></i> Seat Assignment</h3>
+                <p>Configure and manage seat layouts for aircraft.</p>
+                <div class="card-actions">
+                    <a th:href="@{/seats/manage}" class="btn btn-primary">
+                        <i class="fas fa-cogs"></i> Manage Layouts
+                    </a>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-dollar-sign"></i> Flight Pricing</h3>
+                <p>Set prices for different seat types on approved flights.</p>
+                <div class="card-actions">
+                    <a th:href="@{/flight-pricing/list-flights}" class="btn btn-primary">
+                        <i class="fas fa-dollar-sign"></i> Set Prices
+                    </a>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-users"></i> User Management</h3>
+                <p>Create and manage admin and manager accounts.</p>
+                <div class="card-actions">
+                    <a th:href="@{/users/add}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add User
+                    </a>
+                    <a th:href="@{/users/manage}" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> Manage Users
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

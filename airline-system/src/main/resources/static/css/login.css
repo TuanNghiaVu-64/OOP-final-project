@@ -1,0 +1,170 @@
+/* Reset some defaults */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+	font-family: "Manjari", sans-serif;
+	font-weight: 3000;
+	font-style: normal;
+}
+
+body {
+    background-color: #fffcfc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Card container */
+.login-container {
+    background-color: #fffefe;
+    padding: 60px 50px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(90, 9, 9, 0.4);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Title */
+.login-container h2 {
+    text-align: center;
+    color: #8E1616;
+    margin-bottom: 25px;
+	font-size: 170%;
+	font-weight: 700;
+}
+
+/* Form group */
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    color: #000000;
+    font-size: 100%;
+	font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #fbfbfb;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+	margin-bottom: 4px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #8E1616;
+    box-shadow: 0 0 0 2px rgba(142, 22, 22, 0.1);
+}
+
+input.error {
+    border-color: #ff3333;
+    background-color: #fff8f8;
+}
+
+/* Submit button */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #8E1616;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #cc0000;
+}
+
+/* Error message styles */
+.error-message {
+    background-color: #fff2f2;
+    color: #cc0000;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #ffcccc;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Success message styles */
+.success-message {
+    background-color: #f2fff2;
+    color: #008800;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #ccffcc;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Field error messages */
+.field-error {
+    color: #cc0000;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+    min-height: 16px;
+}
+
+/* Register link */
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    color: #666;
+}
+
+.register-link a {
+    color: #8E1616;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+/* Password requirements */
+.password-requirements {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+}
+
+.password-requirements h4 {
+    margin: 0 0 8px 0;
+    color: #495057;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.password-requirements ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #6c757d;
+}
+
+.password-requirements li {
+    margin-bottom: 4px;
+}

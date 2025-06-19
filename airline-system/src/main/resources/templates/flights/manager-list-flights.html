@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Flights - Manager View</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/forms.css}" rel="stylesheet">
+    <script th:src="@{/js/dashboard.js}"></script>
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    <div class="dashboard-container">
+        <div class="content-header">
+            <div class="header-left">
+                <a th:href="@{/manager-dashboard}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2>All Flights</h2>
+            </div>
+        </div>
+
+        <div th:if="${success}" class="flash-message flash-success" th:text="${success}"></div>
+        <div th:if="${error}" class="flash-message flash-error" th:text="${error}"></div>
+
+        <div class="table-container">
+            <table class="data-table" th:if="${not #lists.isEmpty(flights)}">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Aircraft</th>
+                        <th>Route</th>
+                        <th>Departure</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="flight, iterStat : ${flights}">
+                        <td th:text="${iterStat.count}"></td>
+                        <td th:text="${flight.planeModel}"></td>
+                        <td>
+                            <div class="route-info">
+                                <strong th:text="${flight.originCity + ', ' + flight.originCountry}"></strong>
+                                <i class="fas fa-arrow-right" style="margin: 0 8px; color: #666;"></i>
+                                <strong th:text="${flight.destinationCity + ', ' + flight.destinationCountry}"></strong>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="datetime-info">
+                                <div th:text="${#temporals.format(flight.departureTime, 'MMM dd, yyyy')}"></div>
+                                <div style="font-size: 0.9em; color: #666;" 
+                                     th:text="${#temporals.format(flight.departureTime, 'HH:mm')}"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <span th:if="${flight.approved}" class="status-badge approved">Approved</span>
+                            <span th:unless="${flight.approved}" class="status-badge pending">Pending</span>
+                        </td>
+                        <td class="actions" style="text-align: left; white-space: nowrap;">
+                            <div th:if="${!flight.approved}" style="display: inline-block;">
+                                <button th:onclick="'approveFlight(' + ${flight.id} + ')'" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button th:onclick="'rejectFlight(' + ${flight.id} + ')'" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            </div>
+                            <div th:if="${flight.approved}" style="display: inline-block;">
+                                <button th:onclick="'deleteFlight(' + ${flight.id} + ')'" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div th:if="${#lists.isEmpty(flights)}" class="no-data">
+                No flights found in the system.
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        async function approveFlight(id) {
+            if (!confirm('Are you sure you want to approve this flight?')) return;
+            
+            try {
+                const response = await fetch(`/flights/approve/${id}`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Error approving flight');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error approving flight');
+            }
+        }
+
+        async function rejectFlight(id) {
+            if (!confirm('Are you sure you want to reject this flight? This will delete it permanently.')) return;
+            
+            try {
+                const response = await fetch(`/flights/reject/${id}`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Error rejecting flight');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error rejecting flight');
+            }
+        }
+
+        async function deleteFlight(id) {
+            if (!confirm('Are you sure you want to delete this flight? This action cannot be undone.')) return;
+            
+            try {
+                const response = await fetch(`/flights/delete/${id}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.text();
+                
+                if (response.ok) {
+                    if (result.startsWith('error:')) {
+                        // Show detailed error message from server
+                        alert(result.substring(6)); // Remove 'error:' prefix
+                    } else {
+                        // Success - reload page
+                        window.location.reload();
+                    }
+                } else {
+                    // Show the actual server response instead of hardcoded message
+                    alert('Error deleting flight: ' + result);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error deleting flight');
+            }
+        }
+    </script>
+</body>
+</html> 
