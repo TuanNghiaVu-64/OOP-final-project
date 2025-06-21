@@ -103,5 +103,3 @@ Lưu thông tin: URL DB, username, password, chế độ JPA DDL, cổng server,
 - `login.js` – xử lý form đăng nhập.
 - `pages/*.js` – hàm hỗ trợ CRUD/AJAX cho trang quản lý/admin.
 - `utils/api.js` – wrapper `fetchJson()` tổng quát, xử lý lỗi.
-
----
