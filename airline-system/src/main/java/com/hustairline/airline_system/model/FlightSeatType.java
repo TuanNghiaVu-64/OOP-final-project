@@ -3,7 +3,7 @@ package com.hustairline.airline_system.model;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-public class FlightSeatType {
+public class FlightSeatType extends BaseEntity {
     private int id;
     private int flightId;
     private int seatTypeId;
@@ -131,5 +131,15 @@ public class FlightSeatType {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public boolean isValid() {
+        return flightId > 0 && seatTypeId > 0 && price != null;
+    }
+
+    @Override
+    public String getEntityType() {
+        return "FlightSeatType";
     }
 } 

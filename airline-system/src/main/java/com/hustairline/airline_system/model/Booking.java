@@ -3,7 +3,7 @@ package com.hustairline.airline_system.model;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-public class Booking {
+public class Booking extends BaseEntity {
     private int id;
     private int userId;
     private int flightSeatAssignmentId;
@@ -149,5 +149,15 @@ public class Booking {
 
     public void setPlaneModel(String planeModel) {
         this.planeModel = planeModel;
+    }
+
+    @Override
+    public boolean isValid() {
+        return userId > 0 && flightSeatAssignmentId > 0 && totalAmount != null;
+    }
+
+    @Override
+    public String getEntityType() {
+        return "Booking";
     }
 } 

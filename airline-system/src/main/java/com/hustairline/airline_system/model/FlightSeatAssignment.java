@@ -1,6 +1,6 @@
 package com.hustairline.airline_system.model;
 
-public class FlightSeatAssignment {
+public class FlightSeatAssignment extends BaseEntity {
     private int id;
     private int flightId;
     private int seatId;
@@ -83,5 +83,15 @@ public class FlightSeatAssignment {
 
     public void setFlightInfo(String flightInfo) {
         this.flightInfo = flightInfo;
+    }
+
+    @Override
+    public boolean isValid() {
+        return flightId > 0 && seatId > 0 && flightSeatTypeId > 0;
+    }
+
+    @Override
+    public String getEntityType() {
+        return "FlightSeatAssignment";
     }
 } 

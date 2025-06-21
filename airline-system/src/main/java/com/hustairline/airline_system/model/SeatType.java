@@ -1,6 +1,6 @@
 package com.hustairline.airline_system.model;
 
-public class SeatType {
+public class SeatType extends BaseEntity {
     private int id;
     private String name;
     private String features;
@@ -45,5 +45,15 @@ public class SeatType {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    @Override
+    public boolean isValid() {
+        return name != null && !name.trim().isEmpty();
+    }
+
+    @Override
+    public String getEntityType() {
+        return "SeatType";
     }
 } 

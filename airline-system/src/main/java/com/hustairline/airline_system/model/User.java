@@ -1,6 +1,6 @@
 package com.hustairline.airline_system.model;
 
-public class User {
+public class User extends BaseEntity {
     private int id;
     private String username;
     private String password;
@@ -37,6 +37,16 @@ public class User {
 	public void setApproved(boolean approved) {
 		this.approved = approved;
 	}
+
+    @Override
+    public boolean isValid() {
+        return username != null && !username.trim().isEmpty() && password != null && !password.trim().isEmpty();
+    }
+
+    @Override
+    public String getEntityType() {
+        return "User";
+    }
 
     // Getters and Setters
     
