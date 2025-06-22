@@ -1,5 +1,5 @@
 Dưới đây là danh mục tất cả các tệp trong dự án **airline-system** và mục đích sử dụng của từng tệp.
-Các tệp được nhóm theo **package/thư mục** để có thể dễ dàng lướt qua hoặc tìm sâu vào chi tiết.
+Các tệp được nhóm theo **package/thư mục** để bạn có thể dễ dàng lướt qua hoặc tìm sâu vào chi tiết.
 
 ---
 
@@ -103,3 +103,23 @@ Lưu thông tin: URL DB, username, password, chế độ JPA DDL, cổng server,
 - `login.js` – xử lý form đăng nhập.
 - `pages/*.js` – hàm hỗ trợ CRUD/AJAX cho trang quản lý/admin.
 - `utils/api.js` – wrapper `fetchJson()` tổng quát, xử lý lỗi.
+
+---
+
+### 10. `Documentation`
+| Tệp | Mục đích |
+|------|----------|
+| `OOP_IMPLEMENTATION_GUIDE.md` | Hướng dẫn toàn bộ phần mở rộng OOP & mẫu thiết kế đã áp dụng. |
+| `OOP_TECHNIQUES_EXPLAINED.md` | Phân tích sâu từng kỹ thuật OOP được sử dụng. |
+| `OOP_CORE_PRINCIPLES.md` | Tóm tắt trọng tâm về Trừu tượng / Đóng gói / Kế thừa / Đa hình. |
+
+---
+
+### 📌 **Cách đọc danh sách này**
+
+- Muốn debug truy vấn? → đến `repository` tương ứng.  
+- Trang web hiển thị thế nào? → bắt đầu từ `controller` → `repository` → `template` → `JS`.  
+- Thêm một thực thể mới? → tạo `model` → `repository` (kế thừa `AbstractJdbcRepository`) → `validator` → `controller` → `template`.
+
+📍 **Sơ đồ này giúp bạn không bao giờ phải hỏi “tôi nên tìm ở đâu?” cho bất kỳ tính năng nào trong codebase.**
+

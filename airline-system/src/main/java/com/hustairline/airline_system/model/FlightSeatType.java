@@ -19,7 +19,6 @@ public class FlightSeatType extends BaseEntity {
     private String flightOrigin;
     private String flightDestination;
     private Timestamp flightDepartureTime;
-    private Timestamp createdAt;
 
     public int getId() {
         return id;
@@ -123,14 +122,6 @@ public class FlightSeatType extends BaseEntity {
 
     public void setFlightDepartureTime(Timestamp flightDepartureTime) {
         this.flightDepartureTime = flightDepartureTime;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
     }
 
     @Override
