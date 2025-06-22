@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class FlightSeatType extends BaseEntity {
-    private int id;
     private int flightId;
     private int seatTypeId;
     private BigDecimal price;
@@ -19,14 +18,6 @@ public class FlightSeatType extends BaseEntity {
     private String flightOrigin;
     private String flightDestination;
     private Timestamp flightDepartureTime;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public int getFlightId() {
         return flightId;

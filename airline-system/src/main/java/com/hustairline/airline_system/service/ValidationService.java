@@ -3,16 +3,8 @@ package com.hustairline.airline_system.service;
 import com.hustairline.airline_system.model.BaseEntity;
 import java.util.List;
 
-/**
- * Interface for validation services
- * Demonstrates Strategy Pattern and Interface usage
- * Allows different validation implementations for different entities
- */
 public interface ValidationService<T extends BaseEntity> {
-    
-    /**
-     * Validation result class to encapsulate validation outcome
-     */
+
     class ValidationResult {
         private final boolean isValid;
         private final List<String> errors;
@@ -32,11 +24,6 @@ public interface ValidationService<T extends BaseEntity> {
         public boolean hasErrors() { return errors != null && !errors.isEmpty(); }
     }
 
-    /**
-     * Validate an entity before saving
-     * @param entity the entity to validate
-     * @return validation result
-     */
     ValidationResult validateForSave(T entity);
 
     /**

@@ -2,16 +2,8 @@ package com.hustairline.airline_system.service;
 
 import java.util.List;
 
-/**
- * Interface for notification services
- * Demonstrates Observer Pattern usage
- * Allows decoupled notification handling for system events
- */
 public interface NotificationService {
 
-    /**
-     * Enum for different types of system events
-     */
     enum EventType {
         USER_REGISTERED, USER_APPROVED, USER_REJECTED,
         PLANE_ADDED, PLANE_APPROVED, PLANE_REJECTED,
@@ -21,9 +13,6 @@ public interface NotificationService {
         BOOKING_CREATED, BOOKING_CANCELLED
     }
 
-    /**
-     * Event data container
-     */
     class SystemEvent {
         private final EventType eventType;
         private final String entityType;

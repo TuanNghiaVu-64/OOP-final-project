@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class Booking extends BaseEntity {
-    private int id;
     private int userId;
     private int flightSeatAssignmentId;
     private BigDecimal totalAmount;
@@ -22,14 +21,6 @@ public class Booking extends BaseEntity {
     private String origin;
     private String destination;
     private String planeModel;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public int getUserId() {
         return userId;

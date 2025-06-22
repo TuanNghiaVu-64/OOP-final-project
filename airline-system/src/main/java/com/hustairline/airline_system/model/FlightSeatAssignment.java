@@ -1,7 +1,6 @@
 package com.hustairline.airline_system.model;
 
 public class FlightSeatAssignment extends BaseEntity {
-    private int id;
     private int flightId;
     private int seatId;
     private int flightSeatTypeId;
@@ -12,14 +11,6 @@ public class FlightSeatAssignment extends BaseEntity {
     private String seatTypeName;
     private String seatTypeFeatures;
     private String flightInfo;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public int getFlightId() {
         return flightId;

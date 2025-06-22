@@ -1,18 +1,11 @@
 package com.hustairline.airline_system.model;
 
 public class User extends BaseEntity {
-    private int id;
     private String username;
     private String password;
     private String role;
     private boolean approved;
 
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public String getUsername() {
 		return username;
 	}

@@ -1,19 +1,10 @@
 package com.hustairline.airline_system.model;
 
 public class SeatType extends BaseEntity {
-    private int id;
     private String name;
     private String features;
     private boolean approved;
     private String color;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

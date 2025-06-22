@@ -1,12 +1,8 @@
 package com.hustairline.airline_system.model;
 
-/**
- * Plane entity extending BaseEntity
- * Demonstrates Inheritance and Abstract class implementation
- */
 public class Plane extends BaseEntity {
     private String model;
-    private String size;  // Just 'small' or 'big'
+    private String size;  
     private boolean approved;
     private int assignedSeatsCount;
     private boolean canModifySeats = true;

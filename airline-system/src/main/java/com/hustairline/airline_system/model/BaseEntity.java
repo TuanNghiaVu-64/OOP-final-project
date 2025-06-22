@@ -2,30 +2,17 @@ package com.hustairline.airline_system.model;
 
 import java.time.LocalDateTime;
 
-/**
- * Abstract base class for all entities in the system
- * Demonstrates Abstract Class usage in OOP inheritance hierarchy
- * Provides common functionality and enforces implementation of key methods
- */
 public abstract class BaseEntity {
     protected int id;
     protected LocalDateTime createdAt;
     protected LocalDateTime updatedAt;
     protected boolean isActive = true;
 
-    /**
-     * Default constructor
-     * Automatically sets creation timestamp
-     */
     public BaseEntity() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    /**
-     * Constructor with ID
-     * @param id the entity ID
-     */
     public BaseEntity(int id) {
         this();
         this.id = id;
